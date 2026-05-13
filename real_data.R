@@ -5,7 +5,10 @@ library(igraph)
 library(matrixcalc)
 library(latex2exp)
 library(heterocop)
-
+library(ggraph)
+library(reshape2)
+library(ggplot2)
+library(graphlayouts)
 library(seriation)
 
 data <- read.csv2("data.csv",sep=";")[,-1] # data
@@ -267,29 +270,6 @@ gene_mut <- gene_mut %>% dplyr::filter(mut.icgc_mutation_id%in%colnames(data))
 #%>% dplyr::filter(mut.consequence_type=="exon_variant")
 gene_mut <- unique(gene_mut[,c(1,2)])
 
-# il y a seulement 30 mutations qui correspondent à des exon_variant
-
-#test avec autre chose que les exons
-genes_mut <- c()
-for(i in 1:dim(gene_mut)[1]){
-  if(length(ensembldb::select(edb, keys = ~ gene_id == gene_mut[i,2], columns = "SYMBOL")$SYMBOL)>0){
-    genes_mut <- c(genes_mut,ensembldb::select(edb, keys = ~ gene_id == gene_mut[i,2], columns = "SYMBOL")$SYMBOL)
-  }else{
-    genes_mut <- c(genes_mut,"None")
-  }
-}
-
-mut_gene <- cbind(gene_mut[,1],genes_mut)
-
-
-mut_gene[which(mut_gene[,1]%in%names(V(subG))),]
-
-
-
-library(ggraph)
-library(reshape2)
-library(ggplot2)
-library(graphlayouts)
 
 #Figure 8
 comp <- components(g)
